@@ -42,10 +42,9 @@ services:
     volumes:
       - ./mysql:/var/lib/mysql
     environment:
-      MYSQL_DATABASE: personal-website
-      MYSQL_USER: root
+      MYSQL_USER: admin
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: root
+      MYSQL_PASSWORD: admin
     networks:
       - nginx-php-mysql-node
 
