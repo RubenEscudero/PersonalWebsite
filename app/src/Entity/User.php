@@ -9,6 +9,7 @@ use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -49,9 +50,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updated_at;
 
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Blog::class)]
+    private $blogs;
+
+    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: DataUser::class)]
+    private $dataUsers;
+
     public function __construct()
     {
         $this->social_media_id = new ArrayCollection();
+        $this->blogs = new ArrayCollection();
+        $this->dataUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -209,5 +218,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    /**
+     * @return Collection<int, Blog>
+     */
+    public function getBlogs(): Collection
+    {
+        return $this->blogs;
+    }
+
+    public function addBlog(Blog $blog): self
+    {
+        if (!$this->blogs->contains($blog)) {
+            $this->blogs[] = $blog;
+            $blog->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlog(Blog $blog): self
+    {
+        if ($this->blogs->removeElement($blog)) {
+            // set the owning side to null (unless already changed)
+            if ($blog->getUser() === $this) {
+                $blog->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DataUser>
+     */
+    public function getDataUsers(): Collection
+    {
+        return $this->dataUsers;
+    }
+
+    public function addDataUser(DataUser $dataUser): self
+    {
+        if (!$this->dataUsers->contains($dataUser)) {
+            $this->dataUsers[] = $dataUser;
+            $dataUser->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDataUser(DataUser $dataUser): self
+    {
+        if ($this->dataUsers->removeElement($dataUser)) {
+            // set the owning side to null (unless already changed)
+            if ($dataUser->getUser() === $this) {
+                $dataUser->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
