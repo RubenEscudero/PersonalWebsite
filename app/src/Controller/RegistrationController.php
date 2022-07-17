@@ -41,6 +41,8 @@ class RegistrationController extends AbstractController
                 )
             );
 
+            $user->setName($form->get('name'));
+
             $entityManager->persist($user);
             $entityManager->flush();
 
