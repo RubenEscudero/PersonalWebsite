@@ -62,10 +62,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updated_at;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: Blog::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Blog::class)]
     private $blogs;
 
-    #[ORM\OneToMany(mappedBy: 'user_id', targetEntity: DataUser::class)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: DataUser::class)]
     private $dataUsers;
 
     #[ORM\Column(type: 'boolean')]
